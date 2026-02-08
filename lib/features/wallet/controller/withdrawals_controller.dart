@@ -24,10 +24,10 @@ class WithdrawalsController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.get(Uri.parse("${API.withdrawalsList}?driver_id=${Preferences.getInt(Preferences.userId)}"), headers: API.header);
-      showLog("API :: URL :: ${API.withdrawalsList}?driver_id=${Preferences.getInt(Preferences.userId)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.withdrawalsList}?driver_id=${Preferences.getInt(Preferences.userId)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {

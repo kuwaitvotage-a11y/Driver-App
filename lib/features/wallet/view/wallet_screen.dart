@@ -41,7 +41,7 @@ import 'package:flutter/services.dart';
 // import 'package:flutter_paypal_native/models/custom/user_action.dart';
 // import 'package:flutter_paypal_native/str_helper.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide WalletController;
 import 'dart:math' as maths;
 import 'package:provider/provider.dart';
 // import 'package:razorpay_flutter/razorpay_flutter.dart';

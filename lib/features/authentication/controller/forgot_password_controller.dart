@@ -18,11 +18,11 @@ class ForgotPasswordController extends GetxController {
         headers: API.header,
         body: jsonEncode(bodyParams),
       );
-      showLog("API :: URL :: ${API.sendResetPasswordOtp}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.sendResetPasswordOtp}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       log("responseBody :: ${response.body}");
 
@@ -85,11 +85,11 @@ class ForgotPasswordController extends GetxController {
         body: jsonEncode(bodyParams),
       );
 
-      showLog("API :: URL :: ${API.resetPasswordOtp}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.resetPasswordOtp}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       ShowToastDialog.closeLoader();
 

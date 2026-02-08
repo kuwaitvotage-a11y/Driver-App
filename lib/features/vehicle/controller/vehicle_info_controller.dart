@@ -59,11 +59,10 @@ class VehicleInfoController extends GetxController {
               Preferences.getInt(Preferences.userId).toString())),
           headers: API.header);
 
-      showLog(
-          "API :: URL :: ${API.getVehicleData(Preferences.getInt(Preferences.userId).toString())} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getVehicleData(Preferences.getInt(Preferences.userId).toString())} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         await getVehicleData(prefix.GetVehicleDataModel.fromJson(responseBody));
@@ -144,11 +143,11 @@ class VehicleInfoController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.vehicleRegister),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.vehicleRegister} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.vehicleRegister} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
@@ -182,10 +181,10 @@ class VehicleInfoController extends GetxController {
         Uri.parse(API.vehicleCategory),
         headers: API.header,
       );
-      showLog("API :: URL :: ${API.vehicleRegister} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.vehicleRegister} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       isLoading.value = false;
       print("====>$responseBody");
@@ -223,10 +222,10 @@ class VehicleInfoController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response =
           await http.get(Uri.parse(API.brand), headers: API.header);
-      showLog("API :: URL :: ${API.brand} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.brand} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -267,10 +266,10 @@ class VehicleInfoController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response =
           await http.get(Uri.parse(API.getZone), headers: API.authheader);
-      showLog("API :: URL :: ${API.getZone} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getZone} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -321,11 +320,11 @@ class VehicleInfoController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.model),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.model} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.model} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();

@@ -20,6 +20,25 @@ import 'package:http/http.dart' as http;
 class WaitingApprovalScreen extends StatefulWidget {
   const WaitingApprovalScreen({super.key});
 
+  /// Static method to check if user account is approved
+  /// Returns true if account is verified
+  /// Note: This checks is_verified only, NOT statut or online status
+  /// - is_verified: must be "yes", "1", or 1
+  static bool isAccountApproved() {
+    UserModel? userModel = Constant.getUserData();
+    if (userModel.userData == null) {
+      return false;
+    }
+    
+    final isVerified = (userModel.userData!.isVerified == "yes" ||
+        userModel.userData!.isVerified == "1" ||
+        userModel.userData!.isVerified == 1);
+    
+    // Return true only if verified
+    // Note: statut and online status are NOT checked here
+    return isVerified;
+  }
+
   @override
   State<WaitingApprovalScreen> createState() => _WaitingApprovalScreenState();
 }
@@ -64,11 +83,10 @@ class _WaitingApprovalScreenState extends State<WaitingApprovalScreen> {
           Preferences.setString(Preferences.user, jsonEncode(updatedUserModel));
 
           final isVerified = (updatedUserModel.userData?.isVerified == "yes" ||
+              updatedUserModel.userData?.isVerified == "1" ||
               updatedUserModel.userData?.isVerified == 1);
-          final statut = (updatedUserModel.userData?.statut == "yes");
-          final isFullyApproved = isVerified && statut;
 
-          if (isFullyApproved) {
+          if (isVerified) {
             // Status updated - approved!
             ShowToastDialog.showToast('Your account has been approved!'.tr);
             Get.offAll(() => DashBoard());
@@ -107,12 +125,11 @@ class _WaitingApprovalScreenState extends State<WaitingApprovalScreen> {
 
     UserModel? userModel = Constant.getUserData();
     final isVerified = (userModel.userData?.isVerified == "yes" ||
-        // ignore: unrelated_type_equality_checks
+        userModel.userData?.isVerified == "1" ||
         userModel.userData?.isVerified == 1);
-    final statut = (userModel.userData?.statut == "yes");
 
-    // Check if fully approved
-    final isFullyApproved = isVerified && statut;
+    // Check if verified (NOT checking statut or online status)
+    final isFullyApproved = isVerified;
 
     return Scaffold(
       appBar: CustomAppBar(

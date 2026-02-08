@@ -26,10 +26,10 @@ class PrivacyPolicyController extends GetxController {
         Uri.parse(API.privacyPolicy),
         headers: API.header,
       );
-      showLog("API :: URL :: ${API.privacyPolicy} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.privacyPolicy} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200) {

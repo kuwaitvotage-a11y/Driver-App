@@ -30,10 +30,10 @@ class ContactUsController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.contactUs), headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.contactUs} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.contactUs} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200) {

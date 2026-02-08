@@ -127,11 +127,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
     };
     final response = await http.post(Uri.parse(API.getProfileByPhone),
         headers: API.header, body: jsonEncode(bodyParams));
-    showLog("API :: URL :: ${API.getProfileByPhone}");
-    showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-    showLog("API :: Request Header :: ${API.header.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+
     Map<String, dynamic> responseBodyPhone = json.decode(response.body);
     if (response.statusCode == 200 &&
         responseBodyPhone['success'] == "success") {
@@ -141,17 +137,13 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       userModel.value = value;
       update();
     }
-
-    print("=======>${userModel.value.userData!.amount}");
   }
 
   Future<dynamic> getRejectBtnstatus() async {
     final response =
         await http.post(Uri.parse(API.rejectbtnRides), headers: API.header);
     Map<String, dynamic> responseBody = json.decode(response.body);
-    print('Cabme: ${response.body}');
     if (response.statusCode == 200 && responseBody['status'] == 200) {
-      print('Cabme: $responseBody');
       checkRideRejectBttnStatus = responseBody['message'];
       update();
     } else {}
@@ -169,23 +161,15 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 
-      showLog(
-          "API :: URL :: ${API.driverAllRides}?id_driver=${Preferences.getInt(Preferences.userId)}");
-      showLog("API :: Request Body :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
-
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         isLoading.value = false;
         try {
           RideModel model = RideModel.fromJson(responseBody);
           rideList.value = model.data!;
         } catch (e) {
-          print(e);
           return null;
         }
 
-        // clearDriverRide(model.timeduration!, model.data!);
         ShowToastDialog.closeLoader();
         update();
       } else {
@@ -196,19 +180,14 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
     } on TimeoutException catch (e) {
       isLoading.value = false;
       ShowToastDialog.closeLoader();
-      // ShowToastDialog.showToast(e.message.toString());
     } on SocketException catch (e) {
       isLoading.value = false;
       ShowToastDialog.closeLoader();
-      // ShowToastDialog.showToast(e.message.toString());
     } on Error catch (e) {
-      print(e);
       isLoading.value = false;
       ShowToastDialog.closeLoader();
-      // ShowToastDialog.showToast(e.toString());
     } catch (e) {
       ShowToastDialog.closeLoader();
-      // ShowToastDialog.showToast(e.toString());
     }
     return null;
   }
@@ -230,11 +209,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.feelSafeAtDestination),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.feelSafeAtDestination}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
@@ -266,13 +241,9 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.conformRide),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.conformRide}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
-      log(responseBody.toString());
+
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
         return responseBody;
@@ -305,11 +276,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.rejectRide),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.rejectRide}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -343,11 +310,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.onRideRequest),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.onRideRequest}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -383,11 +346,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.setCompleteRequest),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.setCompleteRequest}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -428,11 +387,7 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
           Uri.parse(
               "${API.rideOtpVerify}?id_user_app=$userId&otp=${otpController.text.toString()}&ride_id=$rideId&ride_type="),
           headers: API.header);
-      showLog(
-          "API :: URL :: ${API.rideOtpVerify}?id_user_app=$userId&otp=${otpController.text.toString()}&ride_id=$rideId&ride_type=");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -489,15 +444,9 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
       'payment_status': "success",
     };
     try {
-      // ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.payRequestCash),
           headers: API.header, body: jsonEncode(bodyParams));
 
-      showLog("API :: URL :: ${API.payRequestCash}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 &&
@@ -506,30 +455,23 @@ class NewRideController extends GetxController with WidgetsBindingObserver {
         ShowToastDialog.showToast("Successfully completed");
 
         Get.back();
-        // ShowToastDialog.closeLoader();
 
         return responseBody;
       } else if (response.statusCode == 200 &&
           responseBody['success'] == "Failed") {
-        // ShowToastDialog.closeLoader();
         ShowToastDialog.showToast(responseBody['error']);
       } else {
-        // ShowToastDialog.closeLoader();
         ShowToastDialog.showToast(
             'Something want wrong. Please try again later');
         throw Exception('Failed to load album');
       }
     } on TimeoutException catch (e) {
-      // ShowToastDialog.closeLoader();
       ShowToastDialog.showToast(e.message.toString());
     } on SocketException catch (e) {
-      // ShowToastDialog.closeLoader();
       ShowToastDialog.showToast(e.message.toString());
     } on Error catch (e) {
-      // ShowToastDialog.closeLoader();
       ShowToastDialog.showToast(e.toString());
     }
-    // ShowToastDialog.closeLoader();
     return null;
   }
 }

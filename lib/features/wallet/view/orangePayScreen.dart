@@ -37,6 +37,7 @@ class OrangeMoneyScreen extends StatefulWidget {
 class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
   WebViewController controller = WebViewController();
   bool isLoading = true;
+
   @override
   void initState() {
     initController();
@@ -46,7 +47,12 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
 
   callTransaction() {
     Timer.periodic(const Duration(seconds: 3), (Timer t) {
-      transactionstatus(accessToken: widget.accessToken, amount: widget.amount, orderId: widget.orderId, payToken: widget.payToken).then((value) {
+      transactionstatus(
+        accessToken: widget.accessToken,
+        amount: widget.amount,
+        orderId: widget.orderId,
+        payToken: widget.payToken,
+      ).then((value) {
         if (value == 'SUCCESS') {
           Navigator.of(context).pop(true);
         } else if (value == 'FAILED') {
@@ -84,33 +90,23 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
     String apiUrl = widget.orangePay.isSandboxEnabled.toString() == "true"
         ? 'https://api.orange.com/orange-money-webpay/dev/v1/transactionstatus'
         : 'https://api.orange.com/orange-money-webpay/cm/v1/transactionstatus';
+
     Map<String, String> requestBody = {
       "order_id": orderId,
-      "amount": amount, // "OUV",
+      "amount": amount,
       "pay_token": payToken
     };
 
-    var response = await http.post(Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: json.encode(requestBody));
+    var response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode(requestBody),
+    );
 
-    showLog("API :: URL :: $apiUrl");
-    showLog("API :: Request Body :: ${jsonEncode({
-          "order_id": orderId,
-          "amount": amount, // "OUV",
-          "pay_token": payToken
-        })} ");
-    showLog("API :: Request Header :: ${jsonEncode({
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        })} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
     if (response.statusCode == 201) {
       Map<String, dynamic> responseData = jsonDecode(response.body);
       return responseData['status'];
@@ -123,32 +119,39 @@ class _OrangeMoneyScreenState extends State<OrangeMoneyScreen> {
   Widget build(BuildContext context) {
     // ignore: deprecated_member_use
     return WillPopScope(
-        onWillPop: () async {
-          _showMyDialog();
-          return false;
-        },
-        child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.black,
-                centerTitle: false,
-                leading: GestureDetector(
-                  onTap: () {
-                    _showMyDialog();
-                  },
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-                )),
-            body: Stack(alignment: Alignment.center, children: [
-              WebViewWidget(controller: controller),
-              Visibility(
-                  visible: isLoading,
-                  child: Constant.loader(
-                    context,
-                    isDarkMode: false,
-                  ))
-            ])));
+      onWillPop: () async {
+        _showMyDialog();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          centerTitle: false,
+          leading: GestureDetector(
+            onTap: () {
+              _showMyDialog();
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            WebViewWidget(controller: controller),
+            Visibility(
+              visible: isLoading,
+              child: Constant.loader(
+                context,
+                isDarkMode: false,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _showMyDialog() async {

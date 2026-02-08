@@ -32,22 +32,8 @@ class PayPalClientTokenGen {
         "private_key": payPal.privateKey.toString(),
       },
     );
-    showLog("API :: URL :: $url");
-    showLog("API :: Request Body :: ${jsonEncode({
-          "environment":
-              payPal.isLive.toString() == "true" ? "production" : "sandbox",
-          "merchant_id": payPal.merchantId.toString(),
-          "public_key": payPal.publicKey.toString(),
-          "private_key": payPal.privateKey.toString(),
-        })} ");
-    showLog("API :: Request Header :: ${jsonEncode({
-          'apikey': API.apiKey,
-          'accesstoken': Preferences.getString(Preferences.accesstoken),
-        })} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
-    final data = jsonDecode(response.body);
 
+    final data = jsonDecode(response.body);
     return PayPalClientTokenModel.fromJson(data);
   }
 
@@ -76,23 +62,7 @@ class PayPalClientTokenGen {
         "deviceDataFromTheClient": deviceDataFromTheClient,
       },
     );
-    showLog("API :: URL :: $url");
-    showLog("API :: Request Body :: ${jsonEncode({
-          "environment":
-              payPal!.isLive.toString() == "true" ? "production" : "sandbox",
-          "merchant_id": payPal.merchantId.toString(),
-          "public_key": payPal.publicKey.toString(),
-          "private_key": payPal.privateKey.toString(),
-          "nonceFromTheClient": nonceFromTheClient,
-          "amount": amount,
-          "deviceDataFromTheClient": deviceDataFromTheClient,
-        })} ");
-    showLog("API :: Request Header :: ${jsonEncode({
-          'apikey': API.apiKey,
-          'accesstoken': Preferences.getString(Preferences.accesstoken),
-        })} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+
     final data = jsonDecode(response.body);
 
     // final dlo = PayPalCurrencyCodeErrorModel.fromJson(data);

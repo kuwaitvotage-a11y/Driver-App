@@ -2,7 +2,6 @@
 
 import 'package:mshwar_app_driver/features/dashboard/controller/dash_board_controller.dart';
 import 'package:mshwar_app_driver/features/authentication/view/waiting_approval_screen.dart';
-import 'package:mshwar_app_driver/features/authentication/model/user_model.dart';
 import 'package:mshwar_app_driver/features/vehicle/view/vehicle_info_screen.dart';
 import 'package:mshwar_app_driver/features/document/view/document_status_screen.dart';
 import 'package:mshwar_app_driver/common/screens/botton_nav_bar.dart';
@@ -10,7 +9,6 @@ import 'package:mshwar_app_driver/core/themes/constant_colors.dart';
 import 'package:mshwar_app_driver/core/themes/responsive.dart';
 import 'package:mshwar_app_driver/core/utils/dark_theme_provider.dart';
 import 'package:mshwar_app_driver/common/widget/custom_text.dart';
-import 'package:mshwar_app_driver/core/constant/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -23,23 +21,17 @@ class DashBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check approval status before showing dashboard
-    UserModel? userModel = Constant.getUserData();
-    if (userModel.userData != null) {
-      final isVerified = (userModel.userData!.isVerified == "yes" ||
-          userModel.userData!.isVerified == 1);
-      final statut = (userModel.userData!.statut == "yes");
-      final isFullyApproved = isVerified && statut;
-
-      if (!isFullyApproved) {
-        // Not approved - redirect to waiting screen
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Get.offAll(() => const WaitingApprovalScreen());
-        });
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
-      }
+    // Check approval status before showing dashboard using static method
+    // Note: This only checks approval status (is_verified + statut)
+    // Online status is handled separately in the dashboard
+    if (!WaitingApprovalScreen.isAccountApproved()) {
+      // Not approved - redirect to waiting screen
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAll(() => const WaitingApprovalScreen());
+      });
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
     return GetBuilder<DashBoardController>(

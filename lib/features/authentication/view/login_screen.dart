@@ -288,13 +288,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Preferences.setInt(
               Preferences.userId, int.parse(userData!.id.toString()));
 
-          // Check approval status
-          final isVerified =
-              userData.isVerified == "yes" || userData.isVerified == 1;
-          final statut = userData.statut == "yes";
-          final isFullyApproved = isVerified && statut;
-
-          if (!isFullyApproved) {
+          // Check approval status using static method
+          if (WaitingApprovalScreen.isAccountApproved()) {
             // Fully approved - go to dashboard
             Get.offAll(DashBoard(),
                 duration: const Duration(milliseconds: 400),

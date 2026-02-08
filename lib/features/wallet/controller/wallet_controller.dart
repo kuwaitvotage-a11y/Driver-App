@@ -6,7 +6,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:mshwar_app_driver/core/constant/constant.dart';
-import 'package:mshwar_app_driver/core/constant/logdata.dart';
 import 'package:mshwar_app_driver/core/constant/show_toast_dialog.dart';
 import 'package:mshwar_app_driver/features/wallet/model/payStackURLModel.dart';
 import 'package:mshwar_app_driver/features/bank/model/bank_details_model.dart';
@@ -18,12 +17,12 @@ import 'package:mshwar_app_driver/features/authentication/model/user_model.dart'
 import 'package:mshwar_app_driver/service/api.dart';
 import 'package:mshwar_app_driver/core/utils/Preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 //import 'package:flutter_stripe/flutter_stripe.dart' as stripePrefix;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class WalletController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class WalletController extends GetxController {
   RxString ref = "".obs;
 
   RxString totalEarn = "0".obs;
@@ -48,9 +47,12 @@ class WalletController extends GetxController
   var isLoading = true.obs;
   var paymentMethodList = <PaymentMethodData>[].obs;
 
+  late TickerProvider _tickerProvider;
+
   @override
   Future<void> onInit() async {
-    tabController = TabController(length: 2, vsync: this);
+    _tickerProvider = _WalletTickerProvider();
+    tabController = TabController(length: 2, vsync: _tickerProvider);
     getTrancation();
     setFlutterwaveRef();
     getPaymentMethod();
@@ -87,10 +89,10 @@ class WalletController extends GetxController
       ShowToastDialog.showLoader("Please wait");
       final response =
           await http.get(Uri.parse(API.getPaymentMethod), headers: API.header);
-      showLog("API :: URL :: ${API.getPaymentMethod} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: ${API.getPaymentMethod} ");
+      //showLog("API :: Request Header :: ${API.header.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -129,11 +131,11 @@ class WalletController extends GetxController
           Uri.parse(
               "${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)}"),
           headers: API.header);
-      showLog(
-          "API :: URL :: ${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog(
+      //    "API :: URL :: ${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)} ");
+      //showLog("API :: Request Header :: ${API.header.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -175,11 +177,11 @@ class WalletController extends GetxController
           Uri.parse(
               "${API.walletHistory}?id_diver=${Preferences.getInt(Preferences.userId)}"),
           headers: API.header);
-      showLog(
-          "API :: URL :: ${API.walletHistory}?id_diver=${Preferences.getInt(Preferences.userId)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog(
+      //    "API :: URL :: ${API.walletHistory}?id_diver=${Preferences.getInt(Preferences.userId)}");
+      //showLog("API :: Request Header :: ${API.header.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -220,11 +222,11 @@ class WalletController extends GetxController
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.withdrawalsRequest),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.withdrawalsRequest}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: ${API.withdrawalsRequest}");
+      //showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      //showLog("API :: Request Header :: ${API.header.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -257,7 +259,7 @@ class WalletController extends GetxController
   }
 
   Future<dynamic> setAmount(String amount) async {
-    print('00000000AMOUNT : $amount');
+    //print('00000000AMOUNT : $amount');
     try {
       ShowToastDialog.showLoader("Please wait");
       Map<String, dynamic> bodyParams = {
@@ -269,11 +271,11 @@ class WalletController extends GetxController
       };
       final response = await http.post(Uri.parse(API.amount),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.amount}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: ${API.amount}");
+      //showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      //showLog("API :: Request Header :: ${API.header.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -330,17 +332,17 @@ class WalletController extends GetxController
             'Authorization': 'Bearer $stripeSecret',
             'Content-Type': 'application/x-www-form-urlencoded'
           });
-      showLog("API :: URL :: https://api.stripe.com/v1/payment_intents");
-      showLog("API :: Request Body :: ${jsonEncode(body)} ");
-      showLog("API :: Request Header :: ${{
-        'Authorization': 'Bearer $stripeSecret',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: https://api.stripe.com/v1/payment_intents");
+      //showLog("API :: Request Body :: ${jsonEncode(body)} ");
+      //showLog("API :: Request Header :: ${{
+      //  'Authorization': 'Bearer $stripeSecret',
+      //  'Content-Type': 'application/x-www-form-urlencoded'
+      //}.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       return jsonDecode(response.body);
     } catch (e) {
-      print("=====$e");
+      //print("=====$e");
     }
   }
 
@@ -369,22 +371,22 @@ class WalletController extends GetxController
               paymentSettingModel.value.razorpay!.isSandboxEnabled,
         },
       );
-      showLog("API :: URL :: $url");
-      showLog("API :: Request Body :: ${jsonEncode({
-            "amount": (amount * 100).toString(),
-            "receipt_id": orderId,
-            "currency": "INR",
-            "razorpaykey": paymentSettingModel.value.razorpay!.key,
-            "razorPaySecret": paymentSettingModel.value.razorpay!.secretKey,
-            "isSandBoxEnabled":
-                paymentSettingModel.value.razorpay!.isSandboxEnabled,
-          })} ");
-      showLog("API :: Request Header :: ${{
-        'apikey': API.apiKey,
-        'accesstoken': Preferences.getString(Preferences.accesstoken),
-      }.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: $url");
+      //showLog("API :: Request Body :: ${jsonEncode({
+      //      "amount": (amount * 100).toString(),
+      //      "receipt_id": orderId,
+      //      "currency": "INR",
+      //      "razorpaykey": paymentSettingModel.value.razorpay!.key,
+      //      "razorPaySecret": paymentSettingModel.value.razorpay!.secretKey,
+      //      "isSandBoxEnabled":
+      //          paymentSettingModel.value.razorpay!.isSandboxEnabled,
+      //    })} ");
+      //showLog("API :: Request Header :: ${{
+      //  'apikey': API.apiKey,
+      //  'accesstoken': Preferences.getString(Preferences.accesstoken),
+      //}.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
       final responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['id'] != null) {
@@ -429,17 +431,17 @@ class WalletController extends GetxController
       });
 
       final responseBody = json.decode(response.body);
-      showLog("API :: URL :: $url");
-      showLog("API :: Request Body :: ${jsonEncode({
-            "email": "demo@email.com",
-            "amount": (double.parse(amount) * 100).toString(),
-            "currency": "NGN",
-          })} ");
-      showLog("API :: Request Header :: ${{
-        "Authorization": "Bearer $secretKey",
-      }.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      //showLog("API :: URL :: $url");
+      //showLog("API :: Request Body :: ${jsonEncode({
+      //      "email": "demo@email.com",
+      //      "amount": (double.parse(amount) * 100).toString(),
+      //      "currency": "NGN",
+      //    })} ");
+      //showLog("API :: Request Header :: ${{
+      //  "Authorization": "Bearer $secretKey",
+      //}.toString()} ");
+      //showLog("API :: responseStatus :: ${response.statusCode} ");
+      //showLog("API :: responseBody :: ${response.body} ");
 
       if (response.statusCode == 200 && responseBody['status'] == true) {
         isLoading.value = false;
@@ -473,17 +475,17 @@ class WalletController extends GetxController
     }, headers: {
       "Authorization": "Bearer $secretKey",
     });
-    showLog("API :: URL :: $url");
-    showLog("API :: Request Body :: ${jsonEncode({
-          "email": "demo@email.com",
-          "amount": (double.parse(amount) * 100).toString(),
-          "currency": "NGN",
-        })} ");
-    showLog("API :: Request Header :: ${{
-      "Authorization": "Bearer $secretKey",
-    }.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+    //showLog("API :: URL :: $url");
+    //showLog("API :: Request Body :: ${jsonEncode({
+    //      "email": "demo@email.com",
+    //      "amount": (double.parse(amount) * 100).toString(),
+    //      "currency": "NGN",
+    //    })} ");
+    //showLog("API :: Request Header :: ${{
+    //  "Authorization": "Bearer $secretKey",
+    //}.toString()} ");
+    //showLog("API :: responseStatus :: ${response.statusCode} ");
+    //showLog("API :: responseBody :: ${response.body} ");
     final data = jsonDecode(response.body);
 
     if (!data["status"]) {
@@ -501,12 +503,12 @@ class WalletController extends GetxController
     var response = await http.get(Uri.parse(url), headers: {
       "Authorization": "Bearer $secretKey",
     });
-    showLog("API :: URL :: $url");
-    showLog("API :: Request Header :: ${{
-      "Authorization": "Bearer $secretKey",
-    }.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+    //showLog("API :: URL :: $url");
+    //showLog("API :: Request Header :: ${{
+    //  "Authorization": "Bearer $secretKey",
+    //}.toString()} ");
+    //showLog("API :: responseStatus :: ${response.statusCode} ");
+    //showLog("API :: responseBody :: ${response.body} ");
     final data = jsonDecode(response.body);
     if (data["status"] == true) {
       if (data["message"] == "Verification successful") {}
@@ -518,4 +520,27 @@ class WalletController extends GetxController
   }
 
   TabController? tabController;
+
+  @override
+  void onClose() {
+    tabController?.dispose();
+    if (_tickerProvider is _WalletTickerProvider) {
+      (_tickerProvider as _WalletTickerProvider).dispose();
+    }
+    super.onClose();
+  }
+}
+
+class _WalletTickerProvider implements TickerProvider {
+  Ticker? _ticker;
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    _ticker = Ticker(onTick);
+    return _ticker!;
+  }
+
+  void dispose() {
+    _ticker?.dispose();
+  }
 }

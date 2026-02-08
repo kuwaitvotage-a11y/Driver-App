@@ -51,10 +51,7 @@ class CreateRideController extends GetxController {
     try {
       final response =
           await http.get(Uri.parse(API.paymentSetting), headers: API.header);
-      showLog("API :: URL :: ${API.paymentSetting}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         paymentMethodId.value =
@@ -85,11 +82,7 @@ class CreateRideController extends GetxController {
           Uri.parse(API.getVehicleData(
               Preferences.getInt(Preferences.userId).toString())),
           headers: API.header);
-      showLog(
-          "API :: URL :: ${API.getVehicleData(Preferences.getInt(Preferences.userId).toString())}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -118,10 +111,7 @@ class CreateRideController extends GetxController {
     try {
       final response =
           await http.get(Uri.parse(API.getCustomer), headers: API.header);
-      showLog("API :: URL :: ${API.getCustomer}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       dynamic responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         responseBody.forEach((value) {
@@ -146,15 +136,11 @@ class CreateRideController extends GetxController {
   }
 
   Future<PlacesDetailsResponse?> placeSelectAPI(BuildContext context) async {
-    // show input autocomplete with selected mode
-    // then get the Prediction selected
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
       apiKey: Constant.kGoogleApiKey ?? '',
       mode: Mode.overlay,
-      onError: (response) {
-        log("-->${response.status}");
-      },
+      onError: (response) {},
       language: "en",
       types: [],
       strictbounds: false,
@@ -191,11 +177,7 @@ class CreateRideController extends GetxController {
     http.Response response = await http.get(Uri.parse(
         '$url?units=metric&origins=$originLat,'
         '$originLong&destinations=$destLat,$destLong&key=${Constant.kGoogleApiKey}'));
-    showLog("API :: URL :: ${'$url?units=metric&origins=$originLat,'
-        '$originLong&destinations=$destLat,$destLong&key=${Constant.kGoogleApiKey}'}");
-    showLog("API :: Request Header :: ${API.header.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+
     var decodedResponse = jsonDecode(response.body);
 
     if (decodedResponse['status'] == 'OK' &&
@@ -212,11 +194,7 @@ class CreateRideController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.bookRides),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.bookRides}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -230,19 +208,15 @@ class CreateRideController extends GetxController {
       }
     } on TimeoutException catch (e) {
       ShowToastDialog.closeLoader();
-
       ShowToastDialog.showToast(e.message.toString());
     } on SocketException catch (e) {
       ShowToastDialog.closeLoader();
-
       ShowToastDialog.showToast(e.message.toString());
     } on Error catch (e) {
       ShowToastDialog.closeLoader();
-
       ShowToastDialog.showToast(e.toString());
     } catch (e) {
       ShowToastDialog.closeLoader();
-
       ShowToastDialog.showToast(e.toString());
     }
     return null;
@@ -297,11 +271,7 @@ class CreateRideController extends GetxController {
         Uri.parse(
             "${API.walletHistory}?id_diver=${Preferences.getInt(Preferences.userId)}"),
         headers: API.header);
-    showLog(
-        "API :: URL :: ${API.walletHistory}?id_diver=${Preferences.getInt(Preferences.userId)}");
-    showLog("API :: Request Header :: ${API.header.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
+
     Map<String, dynamic> responseBody = json.decode(response.body);
 
     if (response.statusCode == 200 && responseBody['success'] == "success") {

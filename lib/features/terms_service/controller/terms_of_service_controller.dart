@@ -25,10 +25,10 @@ class TermsOfServiceController extends GetxController {
         Uri.parse(API.termsOfCondition),
         headers: API.header,
       );
-      showLog("API :: URL :: ${API.termsOfCondition} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.termsOfCondition} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200) {

@@ -43,10 +43,10 @@ class BankDetailsController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.get(Uri.parse("${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)}"), headers: API.header);
-      showLog("API :: URL :: ${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.bankDetails}?driver_id=${Preferences.getInt(Preferences.userId)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 
@@ -87,11 +87,11 @@ class BankDetailsController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.addBankDetails), headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Body :: ${API.addBankDetails} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Body :: ${API.addBankDetails} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {

@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:mshwar_app_driver/features/wallet/controller/wallet_controller.dart';
 import 'package:mshwar_app_driver/core/themes/constant_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide WalletController;
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PayStackScreen extends StatefulWidget {

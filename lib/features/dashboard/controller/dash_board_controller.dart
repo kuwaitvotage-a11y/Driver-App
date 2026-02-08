@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:mshwar_app_driver/core/constant/constant.dart';
-import 'package:mshwar_app_driver/core/constant/logdata.dart';
 import 'package:mshwar_app_driver/core/constant/show_toast_dialog.dart';
 import 'package:mshwar_app_driver/features/ride/model/driver_location_update.dart';
 import 'package:mshwar_app_driver/features/authentication/model/user_model.dart';
@@ -98,7 +97,7 @@ class DashBoardController extends GetxController {
         Constant.taxList.add(Constant.allTaxList[i]);
       }
     }
-    print(Constant.taxList.length);
+    // print(Constant.taxList.length);
     setCurrentLocation(
         location.latitude.toString(), location.longitude.toString());
   }
@@ -156,7 +155,13 @@ class DashBoardController extends GetxController {
   Rx<UserModel> userModel = UserModel().obs;
 
   getUsrData() async {
+    // print("\n╔═══════════════════════════════════════════════════════╗");
+    // print("║  🌐 GET USER DATA FROM SERVER                        ║");
+    // print("╚═══════════════════════════════════════════════════════╝");
+    
+    // Don't sync with local data first - wait for server response
     userModel.value = Constant.getUserData();
+    
     try {
       Map<String, String> bodyParams = {
         'phone': userModel.value.userData!.phone.toString(),
@@ -164,28 +169,75 @@ class DashBoardController extends GetxController {
         'email': userModel.value.userData!.email.toString(),
         'login_type': userModel.value.userData!.loginType.toString(),
       };
+      
+      // print("📤 REQUEST:");
+      // print("   ├─ URL: ${API.getProfileByPhone}");
+      // print("   ├─ phone: ${bodyParams['phone']}");
+      // print("   ├─ user_cat: ${bodyParams['user_cat']}");
+      // print("   └─ login_type: ${bodyParams['login_type']}");
+      
       final response = await http.post(Uri.parse(API.getProfileByPhone),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getProfileByPhone} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      
+      // print("📥 RESPONSE:");
+      // print("   ├─ Status Code: ${response.statusCode}");
+      // print("   └─ Body: ${response.body}");
+      
       Map<String, dynamic> responseBodyPhone = json.decode(response.body);
       if (response.statusCode == 200 &&
           responseBodyPhone['success'] == "success") {
-        print(
-            "userModel.value.userData!.online :: ${response.body.toString()}");
+        // print("✅ API SUCCESS");
+        // print(
+        //     "userModel.value.userData!.online :: ${response.body.toString()}");
         ShowToastDialog.closeLoader();
         UserModel? value = UserModel.fromJson(responseBodyPhone);
+        
+        // print("📊 PARSED USER DATA:");
+        // print("   ├─ statut: ${value.userData!.statut}");
+        // print("   ├─ online: ${value.userData!.online}");
+        // print("   ├─ statutVehicule: ${value.userData!.statutVehicule}");
+        // print("   └─ isVerified: ${value.userData!.isVerified}");
+        
         Preferences.setString(Preferences.user, jsonEncode(value));
+        
+        // IMPORTANT: Update userModel to trigger Worker
         userModel.value = value;
-        isActive.value =
-            userModel.value.userData!.online == "yes" ? true : false;
+        userModel.refresh(); // Force GetX to detect the change
+        
+        // Update isActive based on FRESH SERVER data
+        final newOnline = value.userData!.online == "yes";
+        final newStatut = value.userData!.statut == "yes";
+        
+        // print("🔄 UPDATING isActive:");
+        // print("   ├─ newStatut: $newStatut");
+        // print("   ├─ newOnline: $newOnline");
+        
+        // Priority 1: Check statut - if "no", force offline
+        if (!newStatut) {
+          // print("   ├─ Priority 1: statut = 'no', forcing offline");
+          isActive.value = false;
+        } else {
+          // Priority 2: Sync with server online status
+          // print("   ├─ Priority 2: statut = 'yes', syncing with online status");
+          isActive.value = newOnline;
+        }
+        
+        // print("   └─ Final isActive.value: ${isActive.value}");
+      } else {
+        // print("❌ API FAILED or account not activated");
+        // print("   ├─ success: ${responseBodyPhone['success']}");
+        // print("   └─ Forcing offline");
+        // API failed or account not activated - force offline
+        isActive.value = false;
       }
     } catch (e) {
+      // print("❌ EXCEPTION: $e");
+      // On error, force offline
+      isActive.value = false;
       rethrow;
     }
+    
+    // print("╚═══════════════════════════════════════════════════════╝\n");
     getDrawerItem();
   }
 
@@ -370,11 +422,11 @@ class DashBoardController extends GetxController {
       };
       final response = await http.post(Uri.parse(API.updateLocation),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updateLocation} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updateLocation} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         return responseBody;
@@ -401,11 +453,11 @@ class DashBoardController extends GetxController {
       };
       final response = await http.post(Uri.parse(API.updateToken),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updateToken} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updateToken} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         return responseBody;
@@ -427,15 +479,15 @@ class DashBoardController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.changeStatus),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.changeStatus} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.changeStatus} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
-      print("====>");
-      print(response.statusCode);
-      print(response.body);
+      // print("====>");
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
         // Refresh user data to get updated status
@@ -483,10 +535,10 @@ class DashBoardController extends GetxController {
     try {
       final response =
           await http.get(Uri.parse(API.paymentSetting), headers: API.header);
-      showLog("API :: URL :: ${API.paymentSetting} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.paymentSetting} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         Preferences.setString(
@@ -519,10 +571,9 @@ class DashBoardController extends GetxController {
         headers: API.header,
       );
 
-      showLog(
-          "API :: URL :: ${API.getVehicleData(Preferences.getInt(Preferences.userId).toString())} ");
-      showLog("API :: responseStatus :: ${vehicleResponse.statusCode} ");
-      showLog("API :: responseBody :: ${vehicleResponse.body} ");
+      ////showLog("API :: URL :: ${API.getVehicleData(Preferences.getInt(Preferences.userId).toString())} ");
+      ////showLog("API :: responseStatus :: ${vehicleResponse.statusCode} ");
+      ////showLog("API :: responseBody :: ${vehicleResponse.body} ");
 
       Map<String, dynamic> vehicleResponseBody =
           json.decode(vehicleResponse.body);
@@ -545,9 +596,9 @@ class DashBoardController extends GetxController {
           headers: API.authheader,
         );
 
-        showLog("API :: URL :: ${API.getZone} ");
-        showLog("API :: responseStatus :: ${zoneResponse.statusCode} ");
-        showLog("API :: responseBody :: ${zoneResponse.body} ");
+        ////showLog("API :: URL :: ${API.getZone} ");
+        ////showLog("API :: responseStatus :: ${zoneResponse.statusCode} ");
+        ////showLog("API :: responseBody :: ${zoneResponse.body} ");
 
         Map<String, dynamic> zoneResponseBody = json.decode(zoneResponse.body);
 

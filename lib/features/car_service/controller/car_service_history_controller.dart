@@ -53,10 +53,10 @@ class CarServiceHistoryController extends GetxController {
 
       var res = await request.send();
       var responseData = await res.stream.toBytes();
-      showLog("API :: URL :: ${API.uploadCarServiceBook}");
-      showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
-      showLog("API :: Response Status :: ${res.statusCode} ");
-      showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
+      ////showLog("API :: URL :: ${API.uploadCarServiceBook}");
+      ////showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
+      ////showLog("API :: Response Status :: ${res.statusCode} ");
+      ////showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
       Map<String, dynamic> response =
           jsonDecode(String.fromCharCodes(responseData));
       if (res.statusCode == 200) {
@@ -91,11 +91,10 @@ class CarServiceHistoryController extends GetxController {
           Uri.parse(API.getCarServiceBook(
               Preferences.getInt(Preferences.userId).toString())),
           headers: API.header);
-      showLog(
-          "API :: URL :: ${API.getCarServiceBook(Preferences.getInt(Preferences.userId).toString())} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getCarServiceBook(Preferences.getInt(Preferences.userId).toString())} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         isLoading.value = false;

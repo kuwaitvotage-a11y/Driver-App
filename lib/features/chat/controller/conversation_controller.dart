@@ -57,11 +57,11 @@ class ConversationController extends GetxController {
         'cat_user': "user_app",
       };
       final response = await http.post(Uri.parse(API.getFcmToken), headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getFcmToken} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getFcmToken} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         receiverToken.value = responseBody['data']['fcm_id'];

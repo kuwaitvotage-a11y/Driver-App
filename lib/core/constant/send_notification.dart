@@ -21,20 +21,26 @@ class SendNotification {
     await getCharacters().then((response) {
       jsonData = json.decode(response.body);
     });
-    final serviceAccountCredentials = ServiceAccountCredentials.fromJson(jsonData);
+    final serviceAccountCredentials =
+        ServiceAccountCredentials.fromJson(jsonData);
 
-    final client = await clientViaServiceAccount(serviceAccountCredentials, _scopes);
+    final client =
+        await clientViaServiceAccount(serviceAccountCredentials, _scopes);
     return client.credentials.accessToken.data;
   }
 
-  static sendOneNotification({required String token, required String title, required String body, required Map<String, dynamic> payload}) async {
+  static sendOneNotification({
+    required String token,
+    required String title,
+    required String body,
+    required Map<String, dynamic> payload,
+  }) async {
     try {
       final String accessToken = await getAccessToken();
-      debugPrint("accessToken=======>");
-      debugPrint(accessToken);
 
       final response = await http.post(
-        Uri.parse('https://fcm.googleapis.com/v1/projects/${Constant.senderId}/messages:send'),
+        Uri.parse(
+            'https://fcm.googleapis.com/v1/projects/${Constant.senderId}/messages:send'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -50,26 +56,8 @@ class SendNotification {
         ),
       );
 
-      showLog("API :: URL :: ${'https://fcm.googleapis.com/v1/projects/${Constant.senderId}/messages:send'} ");
-      showLog("API :: Request Body :: ${jsonEncode(
-        <String, dynamic>{
-          'message': {
-            'token': token,
-            'notification': {'body': body, 'title': title},
-            'data': payload,
-          }
-        },
-      )} ");
-      showLog("API :: Request Header :: ${<String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $accessToken',
-      }.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
-
       return true;
     } catch (e) {
-      debugPrint(e.toString());
       return false;
     }
   }

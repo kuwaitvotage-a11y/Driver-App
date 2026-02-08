@@ -40,11 +40,11 @@ class AddComplaintController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.addComplaint), headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.addComplaint} ");
-      showLog("API :: Request Body :: ${bodyParams.toString()} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.addComplaint} ");
+      ////showLog("API :: Request Body :: ${bodyParams.toString()} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -81,10 +81,10 @@ class AddComplaintController extends GetxController {
         headers: API.header,
       );
 
-      showLog("API :: URL :: ${API.getComplaint}?ride_type=ride&order_id=${rideData.value.id}&user_type=driver} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getComplaint}?ride_type=ride&order_id=${rideData.value.id}&user_type=driver} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       print("=====${response.body}");
       Map<String, dynamic> responseBody = json.decode(response.body);

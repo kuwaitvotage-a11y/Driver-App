@@ -46,10 +46,10 @@ class LocalizationController extends GetxController {
         Uri.parse(API.getLanguage),
         headers: API.authheader,
       );
-      showLog("API :: URL :: ${API.getLanguage}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getLanguage}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "Success") {
         ShowToastDialog.closeLoader();

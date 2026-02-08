@@ -66,10 +66,10 @@ class MyProfileController extends GetxController {
 
       var res = await request.send();
       var responseData = await res.stream.toBytes();
-      showLog("API :: URL :: ${API.userUpdateProfile}");
-      showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
-      showLog("API :: Response Status :: ${res.statusCode} ");
-      showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
+      ////showLog("API :: URL :: ${API.userUpdateProfile}");
+      ////showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
+      ////showLog("API :: Response Status :: ${res.statusCode} ");
+      ////showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
       Map<String, dynamic> response =
           jsonDecode(String.fromCharCodes(responseData));
       if (res.statusCode == 200) {
@@ -102,11 +102,11 @@ class MyProfileController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.updatePreName),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updatePreName}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updatePreName}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
@@ -138,11 +138,11 @@ class MyProfileController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.updateLastName),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updateLastName}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updateLastName}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
@@ -174,11 +174,11 @@ class MyProfileController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.updateUserPhone),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updateUserPhone}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updateUserPhone}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -216,11 +216,11 @@ class MyProfileController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.updateUserEmail),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.updateUserEmail}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.updateUserEmail}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {
@@ -258,11 +258,11 @@ class MyProfileController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.changePassword),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.changePassword}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.changePassword}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -300,10 +300,10 @@ class MyProfileController extends GetxController {
         Uri.parse("${API.deleteUser(userId)}&user_cat=driver"),
         headers: API.header,
       );
-      showLog("API :: URL :: ${"${API.deleteUser}$userId&user_cat=driver"}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${"${API.deleteUser}$userId&user_cat=driver"}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody['success'] != 'Failed') {
         ShowToastDialog.closeLoader();

@@ -70,10 +70,10 @@ class PaymentController extends GetxController {
       final response = await http.get(
           Uri.parse("${API.rideDetails}?ride_id=$id"),
           headers: API.header);
-      showLog("API :: URL :: ${API.rideDetails}?ride_id=$id");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.rideDetails}?ride_id=$id");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 

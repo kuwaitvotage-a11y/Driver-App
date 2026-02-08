@@ -209,32 +209,17 @@ class _SplashScreenState extends State<SplashScreen>
           );
         } else if (Preferences.getBoolean(Preferences.isLogin)) {
           // Check driver approval status before navigating
-          UserModel? userModel = Constant.getUserData();
-          if (userModel.userData != null) {
-            final isVerified = (userModel.userData!.isVerified == "yes" ||
-                userModel.userData!.isVerified == 1);
-            final statut = (userModel.userData!.statut == "yes");
-            final isFullyApproved = isVerified && statut;
-
-            if (isFullyApproved) {
-              // Fully approved - go to dashboard
-              Get.offAll(
-                () => DashBoard(),
-                transition: Transition.fadeIn,
-                duration: const Duration(milliseconds: 500),
-              );
-            } else {
-              // Not fully approved - show waiting approval screen
-              Get.offAll(
-                () => const WaitingApprovalScreen(),
-                transition: Transition.fadeIn,
-                duration: const Duration(milliseconds: 500),
-              );
-            }
-          } else {
-            // No user data - go to login
+          if (WaitingApprovalScreen.isAccountApproved()) {
+            // Fully approved - go to dashboard
             Get.offAll(
-              () => const LoginScreen(),
+              () => DashBoard(),
+              transition: Transition.fadeIn,
+              duration: const Duration(milliseconds: 500),
+            );
+          } else {
+            // Not fully approved - show waiting approval screen
+            Get.offAll(
+              () => const WaitingApprovalScreen(),
               transition: Transition.fadeIn,
               duration: const Duration(milliseconds: 500),
             );
@@ -255,13 +240,9 @@ class _SplashScreenState extends State<SplashScreen>
           if (Preferences.getBoolean(Preferences.isLogin)) {
             UserModel? userModel = Constant.getUserData();
             if (userModel.userData != null) {
-              final isVerified = (userModel.userData!.isVerified == "yes" ||
-                  userModel.userData!.isVerified == 1);
-              final statut = (userModel.userData!.statut == "yes");
-              final isFullyApproved = isVerified && statut;
-
-              nextScreen =
-                  isFullyApproved ? DashBoard() : const WaitingApprovalScreen();
+              nextScreen = WaitingApprovalScreen.isAccountApproved()
+                  ? DashBoard()
+                  : const WaitingApprovalScreen();
             } else {
               nextScreen = const LoginScreen();
             }

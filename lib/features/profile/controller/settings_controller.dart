@@ -27,10 +27,10 @@ class SettingsController extends GetxController {
         Uri.parse(API.settings),
         headers: API.authheader,
       );
-      showLog("API :: URL :: ${API.settings} ");
-      showLog("API :: Request Header :: ${API.authheader.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.settings} ");
+      ////showLog("API :: Request Header :: ${API.authheader.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 && responseBody['success'] == "success") {

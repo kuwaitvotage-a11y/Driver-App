@@ -712,51 +712,49 @@ class _RouteViewScreenState extends State<RouteViewScreen> {
                                                     "ride_id": rideData?.id
                                                   }),
                                                 );
-                                                showLog(
-                                                    "API :: URL :: ${API.notifyUser}");
-                                                showLog(
-                                                    "API :: responseStatus :: ${response.statusCode}");
-                                                showLog(
-                                                    "API :: responseBody :: ${response.body}");
-                                                if (response.statusCode ==
-                                                        200 ||
-                                                    response.statusCode ==
-                                                        201) {
-                                                  ShowToastDialog.closeLoader();
-                                                  ShowToastDialog.showToast(
-                                                      jsonDecode(response.body)[
-                                                          'message']);
-                                                } else if (response
-                                                        .statusCode ==
-                                                    500) {
-                                                  ShowToastDialog.closeLoader();
-                                                  ShowToastDialog.showToast(
-                                                      response.body.toString());
-                                                } else {
-                                                  ShowToastDialog.closeLoader();
-                                                  ShowToastDialog.showToast(
-                                                      'Something went wrong. Please try again later');
-                                                  throw Exception(
-                                                      'Failed to load data');
-                                                }
+                                                ////showLog("API :: URL :: ${API.notifyUser}");
+                                                ////showLog( "API :: responseStatus :: ${response.statusCode}");
+                                                ////showLog(
+                                              //      "API :: responseBody :: ${response.body}");
+                                                // if (response.statusCode ==
+                                                //         200 ||
+                                                //     response.statusCode ==
+                                                //         201) {
+                                                //   ShowToastDialog.closeLoader();
+                                                //   ShowToastDialog.showToast(
+                                                //       jsonDecode(response.body)[
+                                                //           'message']);
+                                                // } else if (response
+                                                //         .statusCode ==
+                                                //     500) {
+                                                //   ShowToastDialog.closeLoader();
+                                                //   ShowToastDialog.showToast(
+                                                //       response.body.toString());
+                                                // } else {
+                                                //   ShowToastDialog.closeLoader();
+                                                //   ShowToastDialog.showToast(
+                                                //       'Something went wrong. Please try again later');
+                                                //   throw Exception(
+                                                //       'Failed to load data');
+                                                // }
                                               } on TimeoutException catch (e) {
                                                 ShowToastDialog.closeLoader();
-                                                showLog(e.toString());
+                                                ////showLog(e.toString());
                                                 ShowToastDialog.showToast(
                                                     e.message.toString());
                                               } on SocketException catch (e) {
                                                 ShowToastDialog.closeLoader();
-                                                showLog(e.toString());
+                                                ////showLog(e.toString());
                                                 ShowToastDialog.showToast(
                                                     e.message.toString());
                                               } on Error catch (e) {
                                                 ShowToastDialog.closeLoader();
-                                                showLog(e.toString());
+                                                ////showLog(e.toString());
                                                 ShowToastDialog.showToast(
                                                     e.toString());
                                               } catch (e) {
                                                 ShowToastDialog.closeLoader();
-                                                showLog(e.toString());
+                                                ////showLog(e.toString());
                                                 ShowToastDialog.showToast(
                                                     e.toString());
                                               }

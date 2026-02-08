@@ -24,11 +24,11 @@ class LoginController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.userLogin),
           headers: API.authheader, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.userLogin}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.userLogin}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200 &&
@@ -76,11 +76,11 @@ class LoginController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.getExistingUserOrNot),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getExistingUserOrNot} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getExistingUserOrNot} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();
@@ -121,11 +121,11 @@ class LoginController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.getProfileByPhone),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getProfileByPhone} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getProfileByPhone} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();

@@ -70,10 +70,10 @@ class OTPController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.resendOtp),
           headers: API.authheader, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.resendOtp}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Response Status :: ${response.statusCode} ");
-      showLog("API :: Response Body :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.resendOtp}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Response Status :: ${response.statusCode} ");
+      ////showLog("API :: Response Body :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 || responseBody['status'] == 200) {
         ShowToastDialog.closeLoader();
@@ -123,10 +123,10 @@ class OTPController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.verifyOtp),
           headers: API.authheader, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.verifyOtp}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Response Status :: ${response.statusCode} ");
-      showLog("API :: Response Body :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.verifyOtp}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Response Status :: ${response.statusCode} ");
+      ////showLog("API :: Response Body :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -167,10 +167,10 @@ class OTPController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.getExistingUserOrNot),
           headers: API.authheader, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getExistingUserOrNot}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Response Status :: ${response.statusCode} ");
-      showLog("API :: Response Body :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getExistingUserOrNot}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Response Status :: ${response.statusCode} ");
+      ////showLog("API :: Response Body :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
@@ -222,10 +222,10 @@ class OTPController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.getProfileByPhone),
           headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.getProfileByPhone}");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Response Status :: ${response.statusCode} ");
-      showLog("API :: Response Body :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getProfileByPhone}");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Response Status :: ${response.statusCode} ");
+      ////showLog("API :: Response Body :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         ShowToastDialog.closeLoader();

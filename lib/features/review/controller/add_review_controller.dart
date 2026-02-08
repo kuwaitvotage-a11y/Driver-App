@@ -40,10 +40,10 @@ class AddReviewController extends GetxController {
     try {
       final response =
           await http.get(Uri.parse("${API.getRideReview}?user_id=${Preferences.getInt(Preferences.userId)}&ride_id=${data.value!.id}&review_of=customer"), headers: API.header);
-      showLog("API :: URL :: ${API.getRideReview}?user_id=${Preferences.getInt(Preferences.userId)}&ride_id=${data.value!.id}&review_of=customer} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getRideReview}?user_id=${Preferences.getInt(Preferences.userId)}&ride_id=${data.value!.id}&review_of=customer} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 
@@ -81,11 +81,11 @@ class AddReviewController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.addReview), headers: API.header, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.addReview} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.addReview} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "Success") {

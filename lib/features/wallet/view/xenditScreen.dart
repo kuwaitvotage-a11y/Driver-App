@@ -15,7 +15,12 @@ class XenditScreen extends StatefulWidget {
   final String transId;
   final String apiKey;
 
-  const XenditScreen({super.key, required this.initialURl, required this.transId, required this.apiKey});
+  const XenditScreen({
+    super.key,
+    required this.initialURl,
+    required this.transId,
+    required this.apiKey,
+  });
 
   @override
   State<XenditScreen> createState() => _XenditScreenState();
@@ -24,6 +29,7 @@ class XenditScreen extends StatefulWidget {
 class _XenditScreenState extends State<XenditScreen> {
   WebViewController controller = WebViewController();
   bool isLoading = true;
+
   @override
   void initState() {
     initController();
@@ -46,11 +52,9 @@ class _XenditScreenState extends State<XenditScreen> {
         }
         if (value.status == 'PAID' || value.status == 'SETTLED') {
           timer?.cancel();
-
           Navigator.of(context).pop(true);
         } else if (value.status == 'FAILED') {
           timer?.cancel();
-
           Navigator.of(context).pop(false);
         }
       });
@@ -74,7 +78,6 @@ class _XenditScreenState extends State<XenditScreen> {
             });
           }),
           onNavigationRequest: (NavigationRequest navigation) async {
-            log("URL :: ${navigation.url}");
             return NavigationDecision.navigate;
           },
         ),
@@ -86,32 +89,42 @@ class _XenditScreenState extends State<XenditScreen> {
   Widget build(BuildContext context) {
     // ignore: deprecated_member_use
     return WillPopScope(
-        onWillPop: () async {
-          _showMyDialog();
-          return false;
-        },
-        child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.black,
-                centerTitle: false,
-                leading: GestureDetector(
-                  onTap: () {
-                    _showMyDialog();
-                  },
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-                )),
-            body: Stack(
-                alignment: Alignment.center,
-                children: [WebViewWidget(controller: controller), Visibility(visible: isLoading, child: Constant.loader(context, isDarkMode: false))])));
+      onWillPop: () async {
+        _showMyDialog();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          centerTitle: false,
+          leading: GestureDetector(
+            onTap: () {
+              _showMyDialog();
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            WebViewWidget(controller: controller),
+            Visibility(
+              visible: isLoading,
+              child: Constant.loader(context, isDarkMode: false),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Cancel Payment'.tr),
@@ -145,10 +158,8 @@ class _XenditScreenState extends State<XenditScreen> {
   }
 
   Future<XenditModel> checkStatus({required String paymentId}) async {
-    // API endpoint
     var url = Uri.parse('https://api.xendit.co/v2/invoices/$paymentId');
 
-    // Headers
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': generateBasicAuthHeader(widget.apiKey.toString()),
@@ -156,14 +167,6 @@ class _XenditScreenState extends State<XenditScreen> {
 
     var response = await http.get(url, headers: headers);
 
-    showLog("API :: URL :: $url");
-    showLog("API :: Request Header :: ${{
-      'Content-Type': 'application/json',
-      'Authorization': generateBasicAuthHeader(widget.apiKey.toString()),
-    }.toString()} ");
-    showLog("API :: responseStatus :: ${response.statusCode} ");
-    showLog("API :: responseBody :: ${response.body} ");
-    // Checking the response status
     if (response.statusCode == 200) {
       XenditModel model = XenditModel.fromJson(jsonDecode(response.body));
       return model;

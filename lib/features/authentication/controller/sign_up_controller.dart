@@ -45,11 +45,11 @@ class SignUpController extends GetxController {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.post(Uri.parse(API.userSignUP),
           headers: API.authheader, body: jsonEncode(bodyParams));
-      showLog("API :: URL :: ${API.userSignUP} ");
-      showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
-      showLog("API :: Request Header :: ${API.authheader.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body}");
+      ////showLog("API :: URL :: ${API.userSignUP} ");
+      ////showLog("API :: Request Body :: ${jsonEncode(bodyParams)} ");
+      ////showLog("API :: Request Header :: ${API.authheader.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body}");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();

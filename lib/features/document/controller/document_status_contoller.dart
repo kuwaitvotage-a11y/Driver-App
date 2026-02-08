@@ -36,10 +36,10 @@ class DocumentStatusController extends GetxController {
     try {
       ShowToastDialog.showLoader("Please wait");
       final response = await http.get(Uri.parse("${API.getDriverUploadedDocument}?driver_id=${Preferences.getInt(Preferences.userId)}"), headers: API.header);
-      showLog("API :: URL :: ${API.getDriverUploadedDocument}?driver_id=${Preferences.getInt(Preferences.userId)} ");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+      ////showLog("API :: URL :: ${API.getDriverUploadedDocument}?driver_id=${Preferences.getInt(Preferences.userId)} ");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
       Map<String, dynamic> responseBody = json.decode(response.body);
       if (response.statusCode == 200 && responseBody['success'] == "success") {
         isLoading.value = false;
@@ -99,10 +99,10 @@ class DocumentStatusController extends GetxController {
       var responseData = await res.stream.toBytes();
 
       Map<String, dynamic> response = jsonDecode(String.fromCharCodes(responseData));
-      showLog("API :: URL :: ${API.driverDocumentUpdate}");
-      showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
-      showLog("API :: Response Status :: ${res.statusCode} ");
-      showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
+      ////showLog("API :: URL :: ${API.driverDocumentUpdate}");
+      ////showLog("API :: Request Body :: ${jsonEncode(request.fields)} ");
+      ////showLog("API :: Response Status :: ${res.statusCode} ");
+      ////showLog("API :: Response Body :: ${String.fromCharCodes(responseData)} ");
       if (res.statusCode == 200) {
         ShowToastDialog.closeLoader();
         ShowToastDialog.showToast("Uploaded!");

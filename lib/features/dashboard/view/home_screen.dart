@@ -17,7 +17,7 @@ import 'package:mshwar_app_driver/features/authentication/model/user_model.dart'
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide WalletController;
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:mshwar_app_driver/core/utils/dark_theme_provider.dart';

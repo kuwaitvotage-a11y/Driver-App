@@ -51,12 +51,10 @@ class CommissionController extends GetxController {
       final response = await http.get(
           Uri.parse(
               "${API.driverDetails}?type_vehicle=$typeVehicle&lat1=$lat1&lng1=$lng1"),
-          headers: API.header);
-      showLog(
-          "API :: URL :: ${API.driverDetails}?type_vehicle=$typeVehicle&lat1=$lat1&lng1=$lng1");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode} ");
-      showLog("API :: responseBody :: ${response.body} ");
+          headers: API.header);"API :: URL :: ${API.driverDetails}?type_vehicle=$typeVehicle&lat1=$lat1&lng1=$lng1";
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode} ");
+      ////showLog("API :: responseBody :: ${response.body} ");
 
       Map<String, dynamic> responseBody = json.decode(response.body);
 
@@ -130,10 +128,10 @@ class CommissionController extends GetxController {
   //     update();
   //     final response = await http.get(Uri.parse(API.getVehicleCategory),
   //         headers: API.header);
-  //     showLog("API :: URL :: '${API.getVehicleCategory}");
-  //     showLog("API :: Request Header :: ${API.header.toString()} ");
-  //     showLog("API :: responseStatus :: ${response.statusCode} ");
-  //     showLog("API :: responseBody ::YY ${response.body} ");
+  //     ////showLog("API :: URL :: '${API.getVehicleCategory}");
+  //     ////showLog("API :: Request Header :: ${API.header.toString()} ");
+  //     ////showLog("API :: responseStatus :: ${response.statusCode} ");
+  //     ////showLog("API :: responseBody ::YY ${response.body} ");
   //     Map<String, dynamic> responseBody = json.decode(response.body);
   //     if (response.statusCode == 200) {
   //       vehicleCategoryModel.value =
@@ -191,10 +189,10 @@ class CommissionController extends GetxController {
           .get(Uri.parse(API.getCommissionUrl(driverId: userdata?.id)));
 
       // UserData? userData = value.userData;
-      showLog("API :: URL :: ${API.getCommissionUrl(driverId: userdata?.id)}");
-      showLog("API :: Request Header :: ${API.header.toString()} ");
-      showLog("API :: responseStatus :: ${response.statusCode}");
-      showLog("API :: responseBody :: ${response.body}");
+      ////showLog("API :: URL :: ${API.getCommissionUrl(driverId: userdata?.id)}");
+      ////showLog("API :: Request Header :: ${API.header.toString()} ");
+      ////showLog("API :: responseStatus :: ${response.statusCode}");
+      ////showLog("API :: responseBody :: ${response.body}");
 
       // packages = dt.map((e) => PackagesModel.fromJson(e)).toList();
 
@@ -204,7 +202,7 @@ class CommissionController extends GetxController {
         ShowToastDialog.closeLoader();
       } else if (response.statusCode == 500) {
         ShowToastDialog.closeLoader();
-        showLog(response.body.toString());
+        ////showLog(response.body.toString());
       } else {
         ShowToastDialog.closeLoader();
         ShowToastDialog.showToast(
@@ -213,19 +211,19 @@ class CommissionController extends GetxController {
       }
     } on TimeoutException catch (e) {
       ShowToastDialog.closeLoader();
-      showLog(e.toString());
+      ////showLog(e.toString());
       ShowToastDialog.showToast(e.message.toString());
     } on SocketException catch (e) {
       ShowToastDialog.closeLoader();
-      showLog(e.toString());
+      ////showLog(e.toString());
       ShowToastDialog.showToast(e.message.toString());
     } on Error catch (e) {
       ShowToastDialog.closeLoader();
-      showLog(e.toString());
+      ////showLog(e.toString());
       ShowToastDialog.showToast(e.toString());
     } catch (e) {
       ShowToastDialog.closeLoader();
-      showLog(e.toString());
+      ////showLog(e.toString());
       ShowToastDialog.showToast(e.toString());
     }
     return;
