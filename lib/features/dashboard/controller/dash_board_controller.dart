@@ -205,22 +205,19 @@ class DashBoardController extends GetxController {
         userModel.refresh(); // Force GetX to detect the change
         
         // Update isActive based on FRESH SERVER data
-        final newOnline = value.userData!.online == "yes";
         final newStatut = value.userData!.statut == "yes";
         
         // print("🔄 UPDATING isActive:");
         // print("   ├─ newStatut: $newStatut");
-        // print("   ├─ newOnline: $newOnline");
         
         // Priority 1: Check statut - if "no", force offline
         if (!newStatut) {
           // print("   ├─ Priority 1: statut = 'no', forcing offline");
           isActive.value = false;
-        } else {
-          // Priority 2: Sync with server online status
-          // print("   ├─ Priority 2: statut = 'yes', syncing with online status");
-          isActive.value = newOnline;
         }
+        // Priority 2: If statut = "yes", DON'T automatically change to online
+        // Let the user control the toggle manually
+        // Only sync with server online status on first load or when explicitly requested
         
         // print("   └─ Final isActive.value: ${isActive.value}");
       } else {
@@ -241,7 +238,7 @@ class DashBoardController extends GetxController {
     getDrawerItem();
   }
 
-  RxBool isActive = true.obs;
+  RxBool isActive = false.obs; // Start with offline, will be updated by getUsrData()
   RxInt selectedDrawerIndex = 0.obs;
   var drawerItems = [].obs;
   final InAppReview inAppReview = InAppReview.instance;

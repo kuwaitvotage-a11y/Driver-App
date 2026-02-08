@@ -15,6 +15,7 @@ import 'package:mshwar_app_driver/core/themes/custom_alert_dialog.dart';
 import 'package:mshwar_app_driver/core/utils/Preferences.dart';
 import 'package:mshwar_app_driver/features/authentication/model/user_model.dart';
 import 'dart:convert';
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide WalletController;
@@ -31,6 +32,117 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Worker? _userModelWorker;
+  Timer? _periodicCheckTimer;
+  bool _isFirstLoad = true;
+  bool _isManualToggle = false;
+  bool _isRefreshing = false; // Flag to prevent Worker during refresh
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Fetch fresh data from server when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final controller = Get.find<DashBoardController>();
+      
+      // Get fresh data from server first
+      await controller.getUsrData();
+      
+      // Then check and update toggle status without toast
+      _checkAndUpdateToggleStatus(showToast: false);
+      _isFirstLoad = false;
+      
+      // Start periodic check every 30 seconds
+      _startPeriodicCheck();
+    });
+    
+    // Listen to userModel changes with debounce to prevent multiple triggers
+    final controller = Get.find<DashBoardController>();
+    
+    // Use debounce instead of ever to prevent multiple rapid triggers
+    _userModelWorker = debounce(
+      controller.userModel,
+      (_) {
+        if (mounted && !_isFirstLoad && !_isManualToggle && !_isRefreshing) {
+          _checkAndUpdateToggleStatus(showToast: true); // Show toast only on server updates
+        }
+        
+        // Reset flag after processing
+        _isManualToggle = false;
+      },
+      time: const Duration(milliseconds: 500), // Wait 500ms before triggering
+    );
+  }
+
+  /// Start periodic check to sync with server every 30 seconds
+  void _startPeriodicCheck() {
+    _periodicCheckTimer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      
+      final controller = Get.find<DashBoardController>();
+      await controller.getUsrData();
+      // The Worker will handle the toggle update automatically
+    });
+  }
+
+  @override
+  void dispose() {
+    _userModelWorker?.dispose();
+    _periodicCheckTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Check and update toggle status based on server data
+  void _checkAndUpdateToggleStatus({bool showToast = false}) async {
+    if (!mounted) return;
+    
+    final controller = Get.find<DashBoardController>();
+    final userData = controller.userModel.value.userData;
+    
+    if (userData != null) {
+      // Get the actual online status from server
+      final serverOnlineStatus = userData.online == "yes";
+      final accountIsActive = userData.statut == "yes";
+      
+      // Store previous state to detect changes
+      final previousState = controller.isActive.value;
+      
+      // Priority 1: Check statut first - if "no", force offline
+      if (!accountIsActive) {
+        if (controller.isActive.value) {
+          controller.isActive.value = false;
+          
+          Map<String, dynamic> bodyParams = {
+            'id_driver': Preferences.getInt(Preferences.userId),
+            'online': 'no',
+          };
+          await controller.changeOnlineStatus(bodyParams);
+          
+          if (mounted && showToast) {
+            ShowToastDialog.showToast(
+              "Your account is currently inactive. You cannot go online.".tr
+            );
+          }
+        }
+      } else {
+        // Priority 2: Account is active (statut = "yes"), sync with server online status
+        controller.isActive.value = serverOnlineStatus;
+        
+        // Show toast only if state changed and showToast is true
+        if (mounted && showToast && previousState != serverOnlineStatus) {
+          if (serverOnlineStatus) {
+            ShowToastDialog.showToast("You are now online".tr);
+          } else {
+            ShowToastDialog.showToast("You are now offline".tr);
+          }
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +225,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
           return RefreshIndicator(
             onRefresh: () async {
+              // Set flag to prevent Worker from interfering
+              _isRefreshing = true;
+              
               await controller.getUsrData();
               await Get.find<WalletController>().getTrancation();
+              
+              // No need to call _checkAndUpdateToggleStatus here
+              // because getUsrData() already updates isActive correctly
+              
+              // Reset flag after a delay to allow Worker to resume
+              await Future.delayed(const Duration(milliseconds: 1000));
+              _isRefreshing = false;
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -505,58 +627,100 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Transform.scale(
             scale: 1.1,
-            child: Obx(() => Switch(
-                  value: controller.isActive.value,
-                  onChanged: (value) async {
-                    await controller.getUsrData();
-                    if (controller.userModel.value.userData!.statutVehicule ==
-                        "no") {
-                      showAlertDialog(context, "vehicleInformation");
-                    } else if (controller
-                                .userModel.value.userData!.isVerified ==
-                            "no" ||
-                        controller
-                            .userModel.value.userData!.isVerified!.isEmpty) {
-                      showAlertDialog(context, "document");
-                    } else {
-                      ShowToastDialog.showLoader("Please wait".tr);
+            child: Obx(() {
+              // Check if account is active (statut = "yes")
+              final isAccountActive = controller.userModel.value.userData?.statut == "yes";
+              
+              return Switch(
+                value: controller.isActive.value,
+                // Disable toggle if account is not active
+                onChanged: !isAccountActive ? null : (value) async {
+                  // Set flag to prevent Worker from showing toast
+                  _isManualToggle = true;
+                  
+                  // Get fresh data from server first
+                  await controller.getUsrData();
+                  
+                  // Double check if account status is still active
+                  if (controller.userModel.value.userData!.statut == "no") {
+                    ShowToastDialog.showToast(
+                      "Your account is currently inactive. Please contact support.".tr
+                    );
+                    _isManualToggle = false; // Reset flag
+                    return;
+                  }
+                  
+                  // Check vehicle status
+                  if (controller.userModel.value.userData!.statutVehicule ==
+                      "no") {
+                    _isManualToggle = false; // Reset flag
+                    showAlertDialog(context, "vehicleInformation");
+                    return;
+                  }
+                  
+                  // Check verification status
+                  if (controller.userModel.value.userData!.isVerified == "no" ||
+                      controller.userModel.value.userData!.isVerified!.isEmpty) {
+                    _isManualToggle = false; // Reset flag
+                    showAlertDialog(context, "document");
+                    return;
+                  }
+                  
+                  // All checks passed, proceed with status change
+                  ShowToastDialog.showLoader("Please wait".tr);
 
-                      Map<String, dynamic> bodyParams = {
-                        'id_driver': Preferences.getInt(Preferences.userId),
-                        'online': controller.isActive.value ? 'no' : 'yes',
-                      };
+                  Map<String, dynamic> bodyParams = {
+                    'id_driver': Preferences.getInt(Preferences.userId),
+                    'online': controller.isActive.value ? 'no' : 'yes',
+                  };
 
-                      await controller
-                          .changeOnlineStatus(bodyParams)
-                          .then((value) {
-                        if (value != null) {
-                          if (value['success'] == "success") {
-                            UserModel userModel = Constant.getUserData();
-                            userModel.userData!.online =
-                                value['data']['online'];
-                            controller.userModel.value = userModel;
-                            Preferences.setString(Preferences.user,
-                                jsonEncode(userModel.toJson()));
-                            controller.isActive.value =
-                                userModel.userData!.online == 'no'
-                                    ? false
-                                    : true;
-                            ShowToastDialog.showToast(value['message']);
-                          } else {
-                            ShowToastDialog.showToast(value['error']);
-                          }
+                  await controller
+                      .changeOnlineStatus(bodyParams)
+                      .then((value) async {
+                    if (value != null) {
+                      if (value['success'] == "success") {
+                        // IMPORTANT: Update ALL fields from server response, not just online
+                        UserModel userModel = Constant.getUserData();
+                        userModel.userData!.online = value['data']['online'];
+                        userModel.userData!.statut = value['data']['statut']; // Update statut too!
+                        
+                        controller.userModel.value = userModel;
+                        Preferences.setString(Preferences.user,
+                            jsonEncode(userModel.toJson()));
+                        
+                        // Check statut first, then online
+                        if (value['data']['statut'] == 'no') {
+                          // Account disabled by admin
+                          controller.isActive.value = false;
+                          ShowToastDialog.showToast(
+                            "Your account has been disabled by admin. Please contact support.".tr
+                          );
+                        } else {
+                          // Account active, sync with online status
+                          controller.isActive.value =
+                              userModel.userData!.online == 'no'
+                                  ? false
+                                  : true;
+                          ShowToastDialog.showToast(value['message']);
                         }
-                      });
-
-                      ShowToastDialog.closeLoader();
+                      } else {
+                        ShowToastDialog.showToast(value['error']);
+                      }
                     }
-                  },
-                  activeTrackColor: ConstantColors.primary,
-                  activeColor: Colors.white,
-                  inactiveTrackColor: isDarkMode
-                      ? AppThemeData.grey800Dark
-                      : AppThemeData.grey300,
-                )),
+                    
+                    // Fetch fresh data after status change to ensure sync
+                    await controller.getUsrData();
+                  });
+
+                  ShowToastDialog.closeLoader();
+                },
+                activeTrackColor: ConstantColors.primary,
+                activeColor: Colors.white,
+                inactiveTrackColor: isDarkMode
+                    ? AppThemeData.grey800Dark
+                    : AppThemeData.grey300,
+              );
+            }),
           ),
         ],
       ),
