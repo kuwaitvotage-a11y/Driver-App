@@ -20,7 +20,7 @@ class NotificationScreen extends StatelessWidget {
     return GetBuilder<NotificationController>(
       init: NotificationController(),
       builder: (controller) {
-        return Scaffold(
+      return Scaffold(
           backgroundColor:
               isDarkMode ? AppThemeData.surface50Dark : AppThemeData.surface50,
           appBar: CustomAppBar(

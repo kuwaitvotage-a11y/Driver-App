@@ -206,18 +206,22 @@ class DashBoardController extends GetxController {
         
         // Update isActive based on FRESH SERVER data
         final newStatut = value.userData!.statut == "yes";
+        final serverOnlineStatus = value.userData!.online == "yes";
         
         // print("🔄 UPDATING isActive:");
         // print("   ├─ newStatut: $newStatut");
+        // print("   ├─ serverOnlineStatus: $serverOnlineStatus");
         
         // Priority 1: Check statut - if "no", force offline
         if (!newStatut) {
           // print("   ├─ Priority 1: statut = 'no', forcing offline");
           isActive.value = false;
+        } else {
+          // Priority 2: If statut = "yes", sync with server online status
+          // This allows admin to control driver's online status from dashboard
+          // print("   ├─ Priority 2: statut = 'yes', syncing with server online status");
+          isActive.value = serverOnlineStatus;
         }
-        // Priority 2: If statut = "yes", DON'T automatically change to online
-        // Let the user control the toggle manually
-        // Only sync with server online status on first load or when explicitly requested
         
         // print("   └─ Final isActive.value: ${isActive.value}");
       } else {
