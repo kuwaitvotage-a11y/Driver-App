@@ -158,10 +158,10 @@ class DashBoardController extends GetxController {
     // print("\n╔═══════════════════════════════════════════════════════╗");
     // print("║  🌐 GET USER DATA FROM SERVER                        ║");
     // print("╚═══════════════════════════════════════════════════════╝");
-    
+
     // Don't sync with local data first - wait for server response
     userModel.value = Constant.getUserData();
-    
+
     try {
       Map<String, String> bodyParams = {
         'phone': userModel.value.userData!.phone.toString(),
@@ -169,67 +169,76 @@ class DashBoardController extends GetxController {
         'email': userModel.value.userData!.email.toString(),
         'login_type': userModel.value.userData!.loginType.toString(),
       };
-      
+
       // print("📤 REQUEST:");
       // print("   ├─ URL: ${API.getProfileByPhone}");
       // print("   ├─ phone: ${bodyParams['phone']}");
       // print("   ├─ user_cat: ${bodyParams['user_cat']}");
       // print("   └─ login_type: ${bodyParams['login_type']}");
-      
+
       final response = await http.post(Uri.parse(API.getProfileByPhone),
           headers: API.header, body: jsonEncode(bodyParams));
-      
+
       // print("📥 RESPONSE:");
       // print("   ├─ Status Code: ${response.statusCode}");
       // print("   └─ Body: ${response.body}");
-      
+
       Map<String, dynamic> responseBodyPhone = json.decode(response.body);
       if (response.statusCode == 200 &&
           responseBodyPhone['success'] == "success") {
-        // print("✅ API SUCCESS");
-        // print(
-        //     "userModel.value.userData!.online :: ${response.body.toString()}");
         ShowToastDialog.closeLoader();
         UserModel? value = UserModel.fromJson(responseBodyPhone);
-        
-        // print("📊 PARSED USER DATA:");
-        // print("   ├─ statut: ${value.userData!.statut}");
-        // print("   ├─ online: ${value.userData!.online}");
-        // print("   ├─ statutVehicule: ${value.userData!.statutVehicule}");
-        // print("   └─ isVerified: ${value.userData!.isVerified}");
-        
+
         Preferences.setString(Preferences.user, jsonEncode(value));
-        
-        // IMPORTANT: Update userModel to trigger Worker
+
+        // IMPORTANT: Update userModel to trigger Worker if needed
         userModel.value = value;
         userModel.refresh(); // Force GetX to detect the change
-        
-        // Update isActive based on FRESH SERVER data
-        final newStatut = value.userData!.statut == "yes";
-        final serverOnlineStatus = value.userData!.online == "yes";
-        
-        // print("🔄 UPDATING isActive:");
-        // print("   ├─ newStatut: $newStatut");
-        // print("   ├─ serverOnlineStatus: $serverOnlineStatus");
-        
-        // Priority 1: Check statut - if "no", force offline
-        if (!newStatut) {
-          // print("   ├─ Priority 1: statut = 'no', forcing offline");
-          isActive.value = false;
-        } else {
-          // Priority 2: If statut = "yes", sync with server online status
-          // This allows admin to control driver's online status from dashboard
-          // print("   ├─ Priority 2: statut = 'yes', syncing with server online status");
-          isActive.value = serverOnlineStatus;
+
+        // We handle the smart logic right here using a state machine transition.
+        final bool toggleEnabledFromApi =
+            value.userData!.statut == "yes"; // ده الـ disable/enable الحقيقي
+        final bool serverOnline = value.userData!.online == "yes";
+
+        // آخر حالة شكل التوجل (مخزنة محلياً) — fallback لو أول مرة = serverOnline
+        final bool lastToggleState =
+            _getLastToggleState(fallback: serverOnline);
+
+        // حدّث حالة تمكين التوجل
+        isToggleEnabled.value = toggleEnabledFromApi;
+        await Preferences.setString(
+            _kLastToggleEnabled, toggleEnabledFromApi ? '1' : '0');
+
+        // القاعدة الذهبية: شكل التوجل = آخر حالة محفوظة، مش serverOnline
+        isActive.value = lastToggleState;
+
+        // ✅ لو التوجل متاح (enabled) ومع ذلك السيرفر مش متزامن مع آخر حالة محفوظة
+        // ابعت للسيرفر آخر حالة محفوظة (silent) — ده يحل مشكلة الـ refresh اللي كانت بتعمل flip
+        if (toggleEnabledFromApi && (serverOnline != lastToggleState)) {
+          final bodyParams = {
+            'id_driver': Preferences.getInt(Preferences.userId),
+            'online': lastToggleState ? 'yes' : 'no',
+          };
+          value.userData!.online =
+              lastToggleState ? "yes" : "no"; // Update local memory immediately
+          await Preferences.setString(
+              Preferences.user, jsonEncode(value.toJson()));
+          userModel.value = value;
+          userModel.refresh();
+
+          await changeOnlineStatusSilently(bodyParams);
         }
-        
-        // print("   └─ Final isActive.value: ${isActive.value}");
+
+        // ✅ لو التوجل Disabled من اللوحة:
+        // - ما تبعتش للسيرفر حاجة
+        // - وما تغيّرش شكل التوجل (يفضل آخر حالة كانت online/ offline لكن باهت)
+
+        // احفظ آخر حالة toggle (لو أول مرة وماكانتش متسجلة)
+        await Preferences.setBoolean(_kLastToggleState, lastToggleState);
       } else {
-        // print("❌ API FAILED or account not activated");
-        // print("   ├─ success: ${responseBodyPhone['success']}");
-        // print("   └─ Forcing offline");
         // API failed or account not activated - force offline
         isActive.value = false;
+        await Preferences.setString('last_known_statut', 'no');
       }
     } catch (e) {
       // print("❌ EXCEPTION: $e");
@@ -237,12 +246,24 @@ class DashBoardController extends GetxController {
       isActive.value = false;
       rethrow;
     }
-    
+
     // print("╚═══════════════════════════════════════════════════════╝\n");
     getDrawerItem();
   }
 
-  RxBool isActive = false.obs; // Start with offline, will be updated by getUsrData()
+  static const String _kLastToggleState = 'last_toggle_state';
+  static const String _kLastToggleEnabled = 'last_toggle_enabled';
+
+  RxBool isToggleEnabled = true.obs;
+  RxBool isActive = false.obs;
+
+  bool _getLastToggleState({required bool fallback}) {
+    final saved = Preferences.getBoolean(_kLastToggleState);
+    return (Preferences.getString(_kLastToggleEnabled).isEmpty)
+        ? fallback
+        : saved;
+  }
+
   RxInt selectedDrawerIndex = 0.obs;
   var drawerItems = [].obs;
   final InAppReview inAppReview = InAppReview.instance;
@@ -515,20 +536,63 @@ class DashBoardController extends GetxController {
     return null;
   }
 
-  updateActiveStatus(bool value) async {
+  // Silent version of changeOnlineStatus to avoid recursive loading loops during sync logic
+  Future<dynamic> changeOnlineStatusSilently(bodyParams) async {
     try {
-      // Update UI immediately
-      isActive.value = value;
+      final response = await http.post(Uri.parse(API.changeStatus),
+          headers: API.header, body: jsonEncode(bodyParams));
+      Map<String, dynamic> responseBody = json.decode(response.body);
 
-      Map<String, String> bodyParams = {
-        'id_user': Preferences.getInt(Preferences.userId).toString(),
+      if (response.statusCode == 200) {
+        updateCurrentLocation();
+
+        // Try avoiding an infinite loop by silently updating memory state instead of calling getUsrData()
+        UserModel updatedModel = Constant.getUserData();
+        updatedModel.userData!.online = bodyParams['online'];
+        await Preferences.setString(
+            Preferences.user, jsonEncode(updatedModel.toJson()));
+
+        userModel.value = updatedModel;
+        userModel.refresh();
+
+        return responseBody;
+      }
+    } catch (e) {
+      log('Silent status update failed: $e');
+    }
+    return null;
+  }
+
+  Future<void> updateActiveStatus(bool value) async {
+    // ممنوع الضغط لو disabled
+    if (!isToggleEnabled.value) {
+      ShowToastDialog.showToast(
+          "Your account is currently inactive. Please contact support.".tr);
+      return;
+    }
+
+    // Update UI immediately (optimistic)
+    final old = isActive.value;
+    isActive.value = value;
+
+    // خزّن آخر شكل للتوجل
+    await Preferences.setBoolean(_kLastToggleState, value);
+
+    try {
+      final bodyParams = {
+        'id_driver': Preferences.getInt(Preferences
+            .userId), // use id_driver integer as required by changeOnlineStatusSilently
         'online': value ? "yes" : "no",
       };
-      await changeOnlineStatus(bodyParams);
+
+      // Use silent version or regular change online status.
+      // changed to `changeOnlineStatusSilently` to avoid triggering getUsrData loop.
+      await changeOnlineStatusSilently(bodyParams);
     } catch (e) {
+      // revert لو فشل
+      isActive.value = old;
+      await Preferences.setBoolean(_kLastToggleState, old);
       log('Error updating active status: $e');
-      // Revert on error
-      isActive.value = !value;
     }
   }
 

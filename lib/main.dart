@@ -8,6 +8,7 @@ import 'package:mshwar_app_driver/features/splash/splash_screen.dart';
 import 'package:mshwar_app_driver/service/api.dart';
 import 'package:mshwar_app_driver/core/themes/styles.dart';
 import 'package:mshwar_app_driver/core/utils/dark_theme_provider.dart';
+import 'package:mshwar_app_driver/core/bindings/app_binding.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -503,6 +504,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             navigatorKey: navigatorKey,
             title: 'Mshwar Driver'.tr,
             debugShowCheckedModeBanner: false,
+            initialBinding: AppBinding(), // Register DashBoardController once
             theme: Styles.themeData(
                 themeChangeProvider.darkTheme == 0
                     ? true
